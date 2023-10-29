@@ -1,3 +1,11 @@
+#A* Pathfinding Algorithm in pygame
+
+#Samuel Mount
+#Oct 19, 2023
+
+#algorithm pseudocode help from https://www.youtube.com/watch?v=-L-WgKMFuhE
+#pygame setup assistance from https://www.youtube.com/watch?v=JtiK0DOeI4A&t=3407s
+
 import pygame 
 import math
 
