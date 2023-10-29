@@ -42,14 +42,14 @@ class Node:
         self.g_cost = 0
         self.parent = None
 
-    def set_parent(self, node):
+    def set_parent(self, node): #Utilized in future idea, lightning strike
         self.parent = node
 
 
-    def set_f(self):
+    def set_f(self): #Reps. node's path efficiency based on dis. to target and from start
         self.f_cost = self.g_cost + self.h_cost
 
-    def set_g(self, parent): 
+    def set_g(self, parent): #Best known path distance to this node from start
         row, col = parent.get_pos()
 
         if row == self.row or col == self.col:  # If neighbor is adjacent
@@ -57,7 +57,7 @@ class Node:
         else:  # Neighbor is diagonal
             new_g_cost = parent.get_g() + 14
 
-        if new_g_cost < self.g_cost:
+        if new_g_cost < self.g_cost: #If new parent has better path to node, returns 1
             self.g_cost = new_g_cost
             self.parent = parent
             return 1  # Return 1 to indicate that g_cost was updated
@@ -84,7 +84,7 @@ class Node:
     def get_color(self): #debug
         return self.color
 
-    def draw_node(self):
+    def draw_node(self): 
         pygame.draw.rect(screen, self.color, pygame.Rect(self.x, self.y, self.width - 1, self.width -1))
     
     def make_barrier(self):
@@ -129,7 +129,7 @@ class Node:
     def is_end(self):
         return self.color == CRIMSON
 
-    def update_neighbors(self, grid): 
+    def update_neighbors(self, grid): #Obtains current node's surrounding nodes including diagnols
         for i in range(self.row - 1, self.row + 2):
             for j in range(self.col - 1, self.col + 2):
                 if i >= 0 and j >= 0:
@@ -144,15 +144,15 @@ class Node:
     def get_neighbors(self):
         return self.neighbors
 
-    def __lt__(self, other):
+    def __lt__(self, other): #compares nodes by F cost
         return self.f_cost < other.get_f()
 
-def heuristic(point_1, point_2):
+def heuristic(point_1, point_2): #Euclidean distance calculation
     x1, y1 = point_1.get_pos()
     x2, y2 = point_2.get_pos()
     return (x1 - x2) + (y1 - y2)
 
-def grid(desired_rows, screen_width):
+def grid(desired_rows, screen_width) #Creates 2D grid, rows are empty lists and cols are nodes
     grid = []
     cube_width = screen_width/desired_rows
     for i in range(desired_rows):
@@ -162,7 +162,7 @@ def grid(desired_rows, screen_width):
             grid[i].append(node)
     return grid
 
-def draw(screen, grid):
+def draw(screen, grid): #updates screen and nodes
     screen.fill(BLACK)
 
     for row in grid:
@@ -171,7 +171,7 @@ def draw(screen, grid):
 
     pygame.display.update()
 
-def get_clicked_pos(mouse_position, rows, width):
+def get_clicked_pos(mouse_position, rows, width): #Tracks mouse pos with respect to grid
     cube_width = width // rows
     x, y = mouse_position
 
@@ -181,8 +181,8 @@ def get_clicked_pos(mouse_position, rows, width):
     return row, col
 
 def a_star(grid, start, end):
-    open_nodes = []
-    closed_nodes = []
+    open_nodes = [] #To be processed nodes
+    closed_nodes = [] #Processed nodes
     open_nodes.append(start)
     path_found = False
 
@@ -196,7 +196,7 @@ def a_star(grid, start, end):
         closed_nodes.append(current)
         current.make_closed()
         
-        if current is end:
+        if current is end: 
             path_found = True
             print("Path Found")
 
@@ -204,9 +204,10 @@ def a_star(grid, start, end):
             if neighbor in closed_nodes:  # Skip nodes in the closed set and barriers
                 continue
 
-            if neighbor.is_barrier():
+            if neighbor.is_barrier(): #Non traversables (barriers) will be skipped from open list
                 continue
 
+            #if better path to neighbor node found or neighbor in open_nodes
             if neighbor.set_g(current) == 1 or neighbor not in open_nodes:
                 neighbor.set_g(current)
                 neighbor.set_h(end)
