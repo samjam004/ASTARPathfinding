@@ -27,7 +27,7 @@ GREY = (131,139,139)
 CRIMSON = (220,20,60)
 GRAPH_GREY = (194,194,194)
 
-class Node:
+class Node: 
     def __init__(self, row, col, width, TOTAL_ROWS):
         self.row = row
         self.col = col
@@ -37,9 +37,9 @@ class Node:
         self.neighbors = []
         self.x = row * width
         self.y = col * width
-        self.f_cost = 0
-        self.h_cost = 0
-        self.g_cost = 0
+        self.f_cost = 0 #H+ G cost, node's path efficiency to reach target, lower is better
+        self.h_cost = 0 #Proximity to target node
+        self.g_cost = 0 #known distance from start node from parent nodes
         self.parent = None
 
     def set_parent(self, node): #Utilized in future idea, lightning strike
