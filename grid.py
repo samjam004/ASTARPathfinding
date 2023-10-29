@@ -183,18 +183,18 @@ def get_clicked_pos(mouse_position, rows, width): #Tracks mouse pos with respect
 def a_star(grid, start, end):
     open_nodes = [] #To be processed nodes
     closed_nodes = [] #Processed nodes
-    open_nodes.append(start)
+    open_nodes.append(start) #adds starting node to open to begin
     path_found = False
 
     while not path_found:
-        clock.tick(15)
-        draw(screen, new_grid)
-        current = min(open_nodes)   
-        current.update_neighbors(new_grid)
+        clock.tick(15) #frame per sec
+        draw(screen, new_grid) #redraws nodes screen
+        current = min(open_nodes) #node with lowest f cost in open added to closed
+        current.update_neighbors(new_grid) #adds neighbors to neighbor array of current node
         index = open_nodes.index(current)
         open_nodes.pop(index)
-        closed_nodes.append(current)
-        current.make_closed()
+        closed_nodes.append(current) #add current to nodes that were evaluated
+        current.make_closed() #changes color to closed node
         
         if current is end: 
             path_found = True
@@ -224,7 +224,7 @@ def a_star(grid, start, end):
 
 
 
-new_grid = grid(TOTAL_ROWS, SCREEN_WIDTH)
+new_grid = grid(TOTAL_ROWS, SCREEN_WIDTH) #creates new 2d grid with nodes
 def main():
 
     start = None
@@ -235,37 +235,32 @@ def main():
 
     while run:
         draw(screen, new_grid)
-        for event in pygame.event.get():
+        for event in pygame.event.get(): #accesses event queue
             if event.type == pygame.QUIT:
                 run = False
             
-            if started:
+            if started: #no changes to grid can be made after started
                 continue
 
-            if pygame.mouse.get_pressed()[0]: 
+            if pygame.mouse.get_pressed()[0]: #left mouse button detection and position
                 mouse_position = pygame.mouse.get_pos()
                 x, y = get_clicked_pos(mouse_position, TOTAL_ROWS, SCREEN_WIDTH)
                 node = new_grid[x][y]
-                if start is None:
+                if start is None: #first click = start
                     start = node
                     node.make_start()
-                elif end is None:
+                elif end is None: #2nd click = target node
                     end = node
                     node.make_end()
-                else: 
+                else: #3rd click and beyond will be barriers
                     if not node.is_end() and not node.is_start():
                         node.make_barrier()
             
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_SPACE]:
+            if keys[pygame.K_SPACE]: #space to begin algorithm
                 started = True
                 a_star(new_grid, start, end)
                 print("success!")
-
-                
-
-
-
 
 main()
 pygame.quit()
